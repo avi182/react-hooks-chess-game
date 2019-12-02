@@ -67,11 +67,13 @@ let cellsPlayers = [
     { symbol: '9820', type: pieceTypes.ROOK, black: true, location: { x: 1, y: 8 } } // First row
 ]
 
+let gameEnded = false
+
 let lastUpdate = new Date().getTime()
 let observers = []
 
 function emitChange() {
-    observers.forEach(o => o && o({ cellsPlayers, timeStamp: lastUpdate }))
+    observers.forEach(o => o && o({ cellsPlayers, timeStamp: lastUpdate, gameEnded }))
 }
 
 export function observe(o) {
@@ -132,13 +134,13 @@ export function moveKnight(fromX, fromY, toX, toY) {
     }
     const pieceObject = { ...cellsPlayers[originCell], location: { x: toX, y: toY } }
     const emptySlotPosition = { type: pieceTypes.EMPTY, location: { x: fromX, y: fromY } }
-    if(cellsPlayers[targetCell].type === pieceTypes.KING){
+    if(cellsPlayers[targetCell].type === pieceTypes.QUEEN){
         isWin = true;
     }
     cellsPlayers[targetCell] = pieceObject
     cellsPlayers[originCell] = emptySlotPosition
     lastUpdate = new Date().getTime()
-    if(isWin) console.log("King is dead. Game WIN")
+    if(isWin) gameEnded = true
     emitChange()
 }
 

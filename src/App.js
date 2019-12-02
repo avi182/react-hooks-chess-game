@@ -10,21 +10,22 @@ function App() {
   const [boardData, setBoardData] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(0)
   const [isBlackPlaying, setPlayingSide] = useState(false)
+  const [isGameEnded, setGameEnded] = useState(false)
 
   useEffect(() => observe((newData) => {
     // console.log(newData)
     if (newData.timeStamp > lastUpdate) {
-      console.log(newData.timeStamp, lastUpdate)
       setBoardData(newData.cellsPlayers)
       setLastUpdate(newData.timeStamp)
       setPlayingSide(!isBlackPlaying)
+      if(newData.gameEnded) setGameEnded(true)
     }
   }))
 
   return (
     <div className={styles.App} style={{backgroundImage: `url(${bgImage})`}}>
       <DndProvider backend={HTML5Backend}>
-        {boardData && <Board playersData={boardData} isBlackPlaying={isBlackPlaying} />}
+        {boardData && <Board playersData={boardData} isBlackPlaying={isBlackPlaying} isGameEnded={isGameEnded} />}
       </DndProvider>
     </div>
   );

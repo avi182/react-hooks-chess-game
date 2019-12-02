@@ -7,5 +7,5 @@ export const colors = {
 }
 
 export const titles = {
-    BLACK_PLAYING: "Black, it's your turn.", WHITE_PLAYING: "White, go ahead."
+    BLACK_PLAYING: "Black, it's your turn.", WHITE_PLAYING: "White, go ahead.", END_GAME: "Game Ended."
 }
