@@ -1,34 +1,3 @@
 .App {
   /* text-align: center; */
 }
-
-.GameBoard {
-  margin: 0 auto;
-  width: 640px;
-  height: 640px;
-  background: rgb(212, 186, 66);
-  border: 10px solid rgb(148, 89, 21);
-  border-radius: 10px;
-}
-
-.SingleBoardCell {
-  float: left;
-  width: 80px;
-  height: 80px;
-  font-size: 50pt;
-  text-align: center;
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.DarkCell {
-  background-color:rgb(83, 83, 83)
-}
-
-.LightCell {
-  background-color:white
-}
-
-.optionalMoveBackground {
-  background-color: red
-}
