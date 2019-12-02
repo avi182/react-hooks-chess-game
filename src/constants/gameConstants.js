@@ -5,3 +5,7 @@ export const pieceTypes = {
 export const colors = {
     LIGHT: 'white', DARK: 'rgba(255, 0, 0, 0.219)'
 }
+
+export const titles = {
+    BLACK_PLAYING: "Black, it's your turn.", WHITE_PLAYING: "White, go ahead."
+}

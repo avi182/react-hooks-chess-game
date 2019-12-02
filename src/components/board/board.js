@@ -3,7 +3,7 @@ import Piece from '../piece/piece'
 import BoardCell from '../board-cell/board-cell'
 import styles from './board.module.css';
 import PropTypes from 'prop-types'
-import { pieceTypes } from '../../constants/gameConstants'
+import { pieceTypes, titles } from '../../constants/gameConstants'
 
 const renderSingleCelllWithParams = (pieceProps, isBlackPlaying) => {
     const { x, y } = pieceProps.location
@@ -18,6 +18,7 @@ const renderSingleCelllWithParams = (pieceProps, isBlackPlaying) => {
 function Board({ playersData, isBlackPlaying }) {
     return (
         <div className={styles.BoardWrapper}>
+            <h2 className={styles.WhosPlaying}>{ isBlackPlaying ? titles.BLACK_PLAYING : titles.WHITE_PLAYING }</h2>
             <div className={styles.GameBoard}>
                 {playersData && playersData.map(cell => renderSingleCelllWithParams(cell, isBlackPlaying))}
             </div>

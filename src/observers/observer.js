@@ -94,7 +94,7 @@ export function canMovePiece(pieceData, toX, toY) {
 
     switch(pieceData.pieceType){
         case pieceTypes.PAWN:
-            return toX === x && (toY >= y - 2 && toY <= y + 2) && !isIntersectingWithPiece(toX, toY) && !isBetweenIntersectedCellAndPlayer(x, y, toX, toY, pieceData.pieceType)
+            return toX === x && (toY >= y - 2 && toY <= y + 2) && !isBetweenIntersectedCellAndPlayer(x, y, toX, toY, pieceData.pieceType)
         case pieceTypes.ROOK:
             break;
         case pieceTypes.BISHOP:
@@ -144,13 +144,6 @@ export function moveKnight(fromX, fromY, toX, toY) {
 
 const getCellByXandY = (x,y) => cellsPlayers.find(cell => cell.location.x === x && cell.location.y === y)
 const piecesFromSameTeam = (pieceOne, pieceTwo) => pieceOne.black === pieceTwo.black
-const isIntersectingWithPiece = (toX, toY) => {
-    const cell = getCellByXandY(toX, toY)
-    if(cell.type !== pieceTypes.EMPTY){
-        return true
-    }
-    return false
-}
 const isBetweenIntersectedCellAndPlayer = (fromX, fromY, toX, toY, pieceType) => {
     switch(pieceType){
         case pieceTypes.PAWN:{
