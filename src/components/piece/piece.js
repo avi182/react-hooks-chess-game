@@ -13,8 +13,6 @@ function Piece({ type, symbol, x, y, black, canPlay }) {
         }),
     })
     
-    console.log(canPlay)
-    
     return (
         <>
             <DragPreviewImage connect={preview} src={null} />
