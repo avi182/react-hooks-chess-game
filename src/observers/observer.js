@@ -102,8 +102,9 @@ export function canMovePiece(pieceData, toX, toY) {
         case pieceTypes.BISHOP:
             return isDiagonalMovePossible(x, y, toX, toY, pieceData) || isVerticalMovePossible(x, y, toX, toY, pieceData)
         case pieceTypes.QUEEN:
-            break;
+            return isTwoStepVerticalMovePossible(x, y, toX, toY, pieceData) || isTwoStepHorizontalMovePossible(x, y, toX, toY, pieceData)
         case pieceTypes.KING:
+            
             break;
         case pieceTypes.KNIGHT:{
                 const dx = toX - x
@@ -146,33 +147,35 @@ export function movePiece(fromX, fromY, toX, toY) {
 
 const getCellByXandY = (x,y) => cellsPlayers.find(cell => cell.location.x === x && cell.location.y === y)
 const piecesFromSameTeam = (pieceOne, pieceTwo) => pieceOne.black === pieceTwo.black
-const isBetweenIntersectedCellAndPlayer = (fromX, fromY, toX, toY, pieceType) => {
-    switch(pieceType){
-        case pieceTypes.PAWN:{
-            if(toY > fromY){
-                const diff = (toY - fromY) - 1
-                for(let i = 1; i <= diff; i++){
-                    const checkedCell = getCellByXandY(toX, toY - i)
-                    if(!isCellEmpty(checkedCell)){
-                        return true
-                    }
-                }
-            }else{
-                const diff = (fromY - toY) - 1
-                for(let i = 1; i <= diff; i++){
-                    const checkedCell = getCellByXandY(toX, toY + i)
-                    if(!isCellEmpty(checkedCell)){
-                        return true
-                    }
-                }
-            }
-            return false
-        }
-        default:
-            break;
-    }
-    return false
-}
+
+// const isBetweenIntersectedCellAndPlayer = (fromX, fromY, toX, toY, pieceType) => {
+//     switch(pieceType){
+//         case pieceTypes.PAWN:{
+//             if(toY > fromY){
+//                 const diff = (toY - fromY) - 1
+//                 for(let i = 1; i <= diff; i++){
+//                     const checkedCell = getCellByXandY(toX, toY - i)
+//                     if(!isCellEmpty(checkedCell)){
+//                         return true
+//                     }
+//                 }
+//             }else{
+//                 const diff = (fromY - toY) - 1
+//                 for(let i = 1; i <= diff; i++){
+//                     const checkedCell = getCellByXandY(toX, toY + i)
+//                     if(!isCellEmpty(checkedCell)){
+//                         return true
+//                     }
+//                 }
+//             }
+//             return false
+//         }
+//         default:
+//             break;
+//     }
+//     return false
+// }
+
 const isCellEmpty = (cell) => {
     return cell ? cell.type === pieceTypes.EMPTY ? true : false : false
 }
@@ -228,7 +231,12 @@ const isDiagonalMovePossible = (x, y, toX, toY, pieceData) => {
 }
         
 const isTwoStepVerticalMovePossible = (x, y, toX, toY, pieceData) => {
-    return toX === x && (toY >= y - 2 && toY <= y + 2) && !isBetweenIntersectedCellAndPlayer(x, y, toX, toY, pieceData.pieceType)
+    // return toX === x && (toY >= y - 2 && toY <= y + 2) && !isBetweenIntersectedCellAndPlayer(x, y, toX, toY, pieceData.pieceType)
+    return toX === x && (toY >= y - 2 && toY <= y + 2) && isVerticalMovePossible(x, y, toX, toY, pieceData)
+}
+
+const isTwoStepHorizontalMovePossible = (x, y, toX, toY, pieceData) => {
+    return toY === y && (toX >= x - 2 && toX <= x + 2) && isHorizontalMovePossible(x, y, toX, toY, pieceData)
 }
 
 const isVerticalMoveIntercepted = (x, y, toX, toY) => {
@@ -246,7 +254,26 @@ const isVerticalMoveIntercepted = (x, y, toX, toY) => {
     return false
 }
 
+const isHorizontalMoveIntercepted = (x, y, toX, toY) => {
+    console.log(toX)
+    for(let i = 1; i < Math.abs(toX - x); i++){
+        if(toX < x){
+            if(!isCellEmpty(getCellByXandY(x - i, y))){
+                return true
+            }
+        } else {
+            if(!isCellEmpty(getCellByXandY(x + 1, y))){
+                return true
+            }
+        }
+    }
+    return false
+}
+
 const isVerticalMovePossible = (x, y, toX, toY, pieceData) => {
-    const currentCell = getCellByXandY(toX, toY)
-    return toX === x && (toY > 0 && toY <= 8) && !isVerticalMoveIntercepted(x, y, toX, toY) && isCellEmptyOrWithOpponent(currentCell, pieceData.black)
+    return toX === x && (toY > 0 && toY <= 8) && !isVerticalMoveIntercepted(x, y, toX, toY) && isCellEmptyOrWithOpponent(getCellByXandY(toX, toY), pieceData.black)
+}
+
+const isHorizontalMovePossible = (x, y, toX, toY, pieceData) => {
+    return toY === y && (toX > 0 && toX <= 8) && !isHorizontalMoveIntercepted(x, y, toX, toY) && isCellEmptyOrWithOpponent(getCellByXandY(toX, toY), pieceData.black)
 }
