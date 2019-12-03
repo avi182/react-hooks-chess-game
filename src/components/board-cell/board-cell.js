@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './board-cell.module.css'
 import Overlay from './overlay'
 import PropTypes from 'prop-types'
-import { canMovePiece, movePiece } from '../../observers/observer'
+import { canMovePiece, movePiece } from '../../util/gameManager'
 import { useDrop } from 'react-dnd'
 import { pieceTypes, colors } from '../../constants/gameConstants'
 

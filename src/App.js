@@ -3,7 +3,7 @@ import styles from './App.module.css';
 import Board from './components/board/board'
 import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
-import { observe } from './observers/observer'
+import { observe } from './util/gameManager'
 import bgImage from './assets/bg2.jpg'
 
 function App() {
@@ -13,7 +13,6 @@ function App() {
   const [isGameEnded, setGameEnded] = useState(false)
 
   useEffect(() => observe((newData) => {
-    // console.log(newData)
     if (newData.timeStamp > lastUpdate) {
       setBoardData(newData.cellsPlayers)
       setLastUpdate(newData.timeStamp)
@@ -25,7 +24,7 @@ function App() {
   return (
     <div className={styles.App} style={{backgroundImage: `url(${bgImage})`}}>
       <DndProvider backend={HTML5Backend}>
-        {boardData && <Board playersData={boardData} isBlackPlaying={isBlackPlaying} isGameEnded={isGameEnded} />}
+        {boardData && <Board playersData={boardData} isBlackPlaying={isBlackPlaying} isGameEnded={isGameEnded} setGameEnded={setGameEnded} />}
       </DndProvider>
     </div>
   );

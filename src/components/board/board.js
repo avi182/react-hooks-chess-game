@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Piece from '../piece/piece'
 import BoardCell from '../board-cell/board-cell'
 import styles from './board.module.css';
@@ -15,13 +15,21 @@ const renderSingleCelllWithParams = (pieceProps, isBlackPlaying, isGameEnded) =>
     </BoardCell>
 }
 
-function Board({ playersData, isBlackPlaying, isGameEnded }) {
+function Board({ playersData, isBlackPlaying, isGameEnded, setGameEnded }) {
+    const [playerWonByDefault, setPlayerWonByDefault] = useState(null)
+    
     return (
         <div className={styles.BoardWrapper}>
             {!isGameEnded && <h2 className={styles.WhosPlaying}>{ isBlackPlaying ? titles.BLACK_PLAYING : titles.WHITE_PLAYING }</h2>}
-            {isGameEnded && <h2 className={styles.GameEnded}>{ titles.END_GAME }</h2>}
+            {isGameEnded && <h2 className={styles.GameEnded}>{ titles.END_GAME } {playerWonByDefault ? playerWonByDefault : !isBlackPlaying ? 'Black' : 'White'} Won!</h2>}
             <div className={styles.GameBoard}>
                 {playersData && playersData.map(cell => renderSingleCelllWithParams(cell, isBlackPlaying, isGameEnded))}
+            </div>
+            <div className={styles.BtnWrapper}>
+                {!isGameEnded ? <div className={styles.GiveUpBtn} onClick={() => {
+                    setPlayerWonByDefault(isBlackPlaying ? 'White' : 'Black')
+                    setGameEnded(true)
+                }}>Give up ({isBlackPlaying ? 'Black' : 'White'})</div> : <></>} 
             </div>
         </div>
     )
@@ -30,7 +38,8 @@ function Board({ playersData, isBlackPlaying, isGameEnded }) {
 Board.propTypes = {
     playersData: PropTypes.array.isRequired,
     isBlackPlaying: PropTypes.bool.isRequired,
-    isGameEnded: PropTypes.bool.isRequired
+    isGameEnded: PropTypes.bool.isRequired,
+    setGameEnded: PropTypes.func
 }
 
 export default Board;

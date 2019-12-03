@@ -1,6 +1,7 @@
-import { pieceTypes, rookDirections } from '../constants/gameConstants'
+import { pieceTypes } from '../constants/gameConstants'
+import movementUtil from './movement'
 
-let cellsPlayers = [
+export let cellsPlayers = [
     { symbol: '9820', type: pieceTypes.ROOK, black: true, location: { x: 1, y: 8 } }, // First row
     { symbol: '9822', type: pieceTypes.KNIGHT, black: true, location: { x: 2, y: 8 } },
     { symbol: '9821', type: pieceTypes.BISHOP, black: true, location: { x: 3, y: 8 } },
@@ -68,7 +69,6 @@ let cellsPlayers = [
 ]
 
 let gameEnded = false
-
 let lastUpdate = new Date().getTime()
 let observers = []
 
@@ -86,9 +86,9 @@ export function observe(o) {
 }
 
 export function canMovePiece(pieceData, toX, toY) {
-    const targetCell = getCellByXandY(toX, toY)
+    const targetCell = movementUtil.getCellByXandY(toX, toY)
 
-    if(piecesFromSameTeam(pieceData, targetCell)){
+    if(movementUtil.piecesFromSameTeam(pieceData, targetCell)){
         return false
     }
     
@@ -96,15 +96,15 @@ export function canMovePiece(pieceData, toX, toY) {
 
     switch(pieceData.pieceType){
         case pieceTypes.PAWN:
-            return isTwoStepVerticalMovePossible(x, y, toX, toY, pieceData)
+            return movementUtil.isTwoStepVerticalMovePossible(x, y, toX, toY, pieceData)
         case pieceTypes.ROOK:
-            return isDiagonalMovePossible(x, y, toX, toY, pieceData)
+            return movementUtil.isDiagonalMovePossible(x, y, toX, toY, pieceData)
         case pieceTypes.BISHOP:
-            return isDiagonalMovePossible(x, y, toX, toY, pieceData) || isVerticalMovePossible(x, y, toX, toY, pieceData)
+            return movementUtil.isDiagonalMovePossible(x, y, toX, toY, pieceData) || movementUtil.isVerticalMovePossible(x, y, toX, toY, pieceData)
         case pieceTypes.QUEEN:
-            return isTwoStepVerticalMovePossible(x, y, toX, toY, pieceData) || isTwoStepHorizontalMovePossible(x, y, toX, toY, pieceData)
+            return movementUtil.isTwoStepVerticalMovePossible(x, y, toX, toY, pieceData) || movementUtil.isTwoStepHorizontalMovePossible(x, y, toX, toY, pieceData)
         case pieceTypes.KING:
-            return isVerticalMovePossible(x, y, toX, toY, pieceData) || isHorizontalMovePossible(x, y, toX, toY, pieceData)
+            return movementUtil.isVerticalMovePossible(x, y, toX, toY, pieceData) || movementUtil.isHorizontalMovePossible(x, y, toX, toY, pieceData)
         case pieceTypes.KNIGHT:{
                 const dx = toX - x
                 const dy = toY - y
@@ -142,137 +142,4 @@ export function movePiece(fromX, fromY, toX, toY) {
     lastUpdate = new Date().getTime()
     if(isWin) gameEnded = true
     emitChange()
-}
-
-const getCellByXandY = (x,y) => cellsPlayers.find(cell => cell.location.x === x && cell.location.y === y)
-const piecesFromSameTeam = (pieceOne, pieceTwo) => pieceOne.black === pieceTwo.black
-
-// const isBetweenIntersectedCellAndPlayer = (fromX, fromY, toX, toY, pieceType) => {
-//     switch(pieceType){
-//         case pieceTypes.PAWN:{
-//             if(toY > fromY){
-//                 const diff = (toY - fromY) - 1
-//                 for(let i = 1; i <= diff; i++){
-//                     const checkedCell = getCellByXandY(toX, toY - i)
-//                     if(!isCellEmpty(checkedCell)){
-//                         return true
-//                     }
-//                 }
-//             }else{
-//                 const diff = (fromY - toY) - 1
-//                 for(let i = 1; i <= diff; i++){
-//                     const checkedCell = getCellByXandY(toX, toY + i)
-//                     if(!isCellEmpty(checkedCell)){
-//                         return true
-//                     }
-//                 }
-//             }
-//             return false
-//         }
-//         default:
-//             break;
-//     }
-//     return false
-// }
-
-const isCellEmpty = (cell) => {
-    return cell ? cell.type === pieceTypes.EMPTY ? true : false : false
-}
-const isCellEmptyOrWithOpponent = (cell, black) => cell.type === pieceTypes.EMPTY || cell.black === !black ? true : false
-
-const isDiagonalMovePossible = (x, y, toX, toY, pieceData) => {
-    let isPossible = false
-    let possibleDirection = null
-    for(let i = 1; i < 8; i++){
-        if(toX === x + i && toY === y + i && isCellEmptyOrWithOpponent(getCellByXandY(toX, toY), pieceData.black)) {
-            isPossible = true
-            possibleDirection = rookDirections.UP_RIGHT
-        } else if (toX === x - i && toY === y - i && isCellEmptyOrWithOpponent(getCellByXandY(toX, toY), pieceData.black)) {
-            isPossible = true
-            possibleDirection = rookDirections.DOWN_LEFT
-        } else if (toX === x - i && toY === y + i && isCellEmptyOrWithOpponent(getCellByXandY(toX, toY), pieceData.black)){
-            isPossible = true
-            possibleDirection = rookDirections.UP_LEFT
-        } else if (toX === x + i && toY === y - i && isCellEmptyOrWithOpponent(getCellByXandY(toX, toY), pieceData.black)) {
-            isPossible = true
-            possibleDirection = rookDirections.DOWN_RIGHT
-        }
-    }
-    if(isPossible){
-        for(let i = 1; i < Math.abs(toX - x); i++){
-            switch(possibleDirection){
-                case rookDirections.UP_RIGHT:
-                    if(!isCellEmpty(getCellByXandY(x + i, y + i))){
-                        return false
-                    }
-                    break
-                case rookDirections.UP_LEFT:
-                    if(!isCellEmpty(getCellByXandY(x - i, y + i))){
-                        return false
-                    }
-                    break
-                case rookDirections.DOWN_RIGHT:
-                    if(!isCellEmpty(getCellByXandY(x + i, y - i))){
-                        return false
-                    }
-                    break
-                case rookDirections.DOWN_LEFT:
-                    if(!isCellEmpty(getCellByXandY(x - i, y - i))){
-                        return false
-                    }
-                    break
-                default:
-                    break
-            }
-        }
-    }
-    return isPossible
-}
-        
-const isTwoStepVerticalMovePossible = (x, y, toX, toY, pieceData) => {
-    // return toX === x && (toY >= y - 2 && toY <= y + 2) && !isBetweenIntersectedCellAndPlayer(x, y, toX, toY, pieceData.pieceType)
-    return toX === x && (toY >= y - 2 && toY <= y + 2) && isVerticalMovePossible(x, y, toX, toY, pieceData)
-}
-
-const isTwoStepHorizontalMovePossible = (x, y, toX, toY, pieceData) => {
-    return toY === y && (toX >= x - 2 && toX <= x + 2) && isHorizontalMovePossible(x, y, toX, toY, pieceData)
-}
-
-const isVerticalMoveIntercepted = (x, y, toX, toY) => {
-    for(let i = 1; i < Math.abs(toY - y); i++){
-        if(toY < y){
-            if(!isCellEmpty(getCellByXandY(x, y - i))){
-                return true
-            }
-        } else {
-            if(!isCellEmpty(getCellByXandY(x, y + i))){
-                return true
-            }
-        }
-    }
-    return false
-}
-
-const isHorizontalMoveIntercepted = (x, y, toX, toY) => {
-    console.log(toX)
-    for(let i = 1; i < Math.abs(toX - x); i++){
-        if(toX < x){
-            if(!isCellEmpty(getCellByXandY(x - i, y))){
-                return true
-            }
-        } else {
-            if(!isCellEmpty(getCellByXandY(x + 1, y))){
-                return true
-            }
-        }
-    }
-    return false
-}
-
-const isVerticalMovePossible = (x, y, toX, toY, pieceData) => {
-    return toX === x && (toY > 0 && toY <= 8) && !isVerticalMoveIntercepted(x, y, toX, toY) && isCellEmptyOrWithOpponent(getCellByXandY(toX, toY), pieceData.black)
-}
-
-const isHorizontalMovePossible = (x, y, toX, toY, pieceData) => {
-    return toY === y && (toX > 0 && toX <= 8) && !isHorizontalMoveIntercepted(x, y, toX, toY) && isCellEmptyOrWithOpponent(getCellByXandY(toX, toY), pieceData.black)
 }
