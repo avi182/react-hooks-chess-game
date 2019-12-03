@@ -104,8 +104,7 @@ export function canMovePiece(pieceData, toX, toY) {
         case pieceTypes.QUEEN:
             return isTwoStepVerticalMovePossible(x, y, toX, toY, pieceData) || isTwoStepHorizontalMovePossible(x, y, toX, toY, pieceData)
         case pieceTypes.KING:
-            
-            break;
+            return isVerticalMovePossible(x, y, toX, toY, pieceData) || isHorizontalMovePossible(x, y, toX, toY, pieceData)
         case pieceTypes.KNIGHT:{
                 const dx = toX - x
                 const dy = toY - y
