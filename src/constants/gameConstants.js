@@ -11,5 +11,5 @@ export const colors = {
 }
 
 export const titles = {
-    BLACK_PLAYING: "Black, it's your turn.", WHITE_PLAYING: "White, go ahead.", END_GAME: "Game Ended."
+    BLACK_PLAYING: "Black, it's your turn.", WHITE_PLAYING: "White, go ahead.", END_GAME: "Game Ended.", BLACK: "Black", WHITE: "White"
 }

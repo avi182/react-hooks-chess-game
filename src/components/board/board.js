@@ -17,19 +17,19 @@ const renderSingleCelllWithParams = (pieceProps, isBlackPlaying, isGameEnded) =>
 
 function Board({ playersData, isBlackPlaying, isGameEnded, setGameEnded }) {
     const [playerWonByDefault, setPlayerWonByDefault] = useState(null)
-    
+
     return (
         <div className={styles.BoardWrapper}>
             {!isGameEnded && <h2 className={styles.WhosPlaying}>{ isBlackPlaying ? titles.BLACK_PLAYING : titles.WHITE_PLAYING }</h2>}
-            {isGameEnded && <h2 className={styles.GameEnded}>{ titles.END_GAME } {playerWonByDefault ? playerWonByDefault : !isBlackPlaying ? 'Black' : 'White'} Won!</h2>}
+            {isGameEnded && <h2 className={styles.GameEnded}>{ titles.END_GAME } {playerWonByDefault ? playerWonByDefault : !isBlackPlaying ? titles.BLACK : titles.WHITE} Won!</h2>}
             <div className={styles.GameBoard}>
                 {playersData && playersData.map(cell => renderSingleCelllWithParams(cell, isBlackPlaying, isGameEnded))}
             </div>
             <div className={styles.BtnWrapper}>
                 {!isGameEnded ? <div className={styles.GiveUpBtn} onClick={() => {
-                    setPlayerWonByDefault(isBlackPlaying ? 'White' : 'Black')
+                    setPlayerWonByDefault(isBlackPlaying ? titles.WHITE : titles.BLACK)
                     setGameEnded(true)
-                }}>Give up ({isBlackPlaying ? 'Black' : 'White'})</div> : <></>} 
+                }}>Give up ({isBlackPlaying ? titles.BLACK : titles.WHITE})</div> : <></>} 
             </div>
         </div>
     )
