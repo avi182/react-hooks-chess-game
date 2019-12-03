@@ -117,7 +117,7 @@ export function canMovePiece(pieceData, toX, toY) {
     }
 }
 
-export function moveKnight(fromX, fromY, toX, toY) {
+export function movePiece(fromX, fromY, toX, toY) {
     let isWin = false
     let originCell = null
     let targetCell = null
@@ -219,37 +219,34 @@ const isDiagonalMovePossible = (x, y, toX, toY, pieceData) => {
                         return false
                     }
                     break
+                default:
+                    break
             }
         }
     }
     return isPossible
 }
-
-const isVerticalMoveIntercepted = (x, y, toX, toY) => {
-    for(let i = 1; i < Math.abs(toY - y); i++){
-        if(toY > y){
-            if(!isCellEmpty(getCellByXandY(x, y + i))){
-                console.log('x:', x,'y + i:', y+i)
-                console.log(getCellByXandY(x, y + i))
-                // console.log('x:', x,'y - i:', y-i)
-                // console.log(getCellByXandY(x, y - i))
-                return true
-            }
-        } else {
-            if(!isCellEmpty(getCellByXandY(x, y - i))){
-                return true
-            }
-        }
-        return false
-    }
-}
-
+        
 const isTwoStepVerticalMovePossible = (x, y, toX, toY, pieceData) => {
     return toX === x && (toY >= y - 2 && toY <= y + 2) && !isBetweenIntersectedCellAndPlayer(x, y, toX, toY, pieceData.pieceType)
 }
 
-const isVerticalMovePossible = (x, y, toX, toY) => {
+const isVerticalMoveIntercepted = (x, y, toX, toY) => {
+    for(let i = 1; i < Math.abs(toY - y); i++){
+        if(toY < y){
+            if(!isCellEmpty(getCellByXandY(x, y - i))){
+                return true
+            }
+        } else {
+            if(!isCellEmpty(getCellByXandY(x, y + i))){
+                return true
+            }
+        }
+    }
+    return false
+}
+
+const isVerticalMovePossible = (x, y, toX, toY, pieceData) => {
     const currentCell = getCellByXandY(toX, toY)
-    return toX === x && (toY >= y - 7 && toY <= y + 7) && !isVerticalMoveIntercepted(x, y, toX, toY) && isCellEmptyOrWithOpponent(currentCell, currentCell.black)
-    // return toX === x && (toY >= y - 7 && toY <= y + 7) && !isVerticalMoveIntercepted(x, y, toX, toY, pieceData.pieceType)
+    return toX === x && (toY > 0 && toY <= 8) && !isVerticalMoveIntercepted(x, y, toX, toY) && isCellEmptyOrWithOpponent(currentCell, pieceData.black)
 }

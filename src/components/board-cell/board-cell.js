@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './board-cell.module.css'
 import Overlay from './overlay'
 import PropTypes from 'prop-types'
-import { canMovePiece, moveKnight } from '../../observers/observer'
+import { canMovePiece, movePiece } from '../../observers/observer'
 import { useDrop } from 'react-dnd'
 import { pieceTypes, colors } from '../../constants/gameConstants'
 
@@ -12,7 +12,7 @@ function BoardCell({ x, y, children }) {
     const [{ isOver, canDrop }, drop] = useDrop({
         accept: pieceTypes.PIECE,
         canDrop: (item) => canMovePiece(item, x, y),
-        drop: (item) => moveKnight(item.x, item.y, x, y),
+        drop: (item) => movePiece(item.x, item.y, x, y),
         collect: monitor => ({
             isOver: !!monitor.isOver(),
             canDrop: !!monitor.canDrop(),
